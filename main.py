@@ -8,13 +8,9 @@ import webbrowser
 import speech_recognition as sr
 from gtts import gTTS
 import subprocess
-import smtplib
 import requests
 from pyowm import OWM
-
-
-
-
+# import smtplib
 # import youtube_dl
 # import vlc
 # import urllib
@@ -26,7 +22,7 @@ from pyowm import OWM
 
 
 # Mетод, который будет интерпретировать голосовой ответ пользователя
-
+#
 def listen():
     voice_recognizer = sr.Recognizer()
     with sr.Microphone() as source:
@@ -45,7 +41,7 @@ def listen():
 
 
 # Mетод, который будет проигрывать аудио файл
-
+#
 def Luna_say(message):
     voice = gTTS(message)
     audio_file = 'audio.mp3' + str(time.time()) + str(random.randint(1, 10000)) + '.mp3'
@@ -58,25 +54,32 @@ def Luna_say(message):
 
 
 # Mетод, который будет выпонять команду
-
+#
 def handle_command(command):
     command = command.lower()
 
     # Приветствие и завершение программы
-
+    #
     if command == 'hello':
-        Luna_say('Hi Max')
+        now = datetime.datetime.now()
+        day_time = int(now.strftime('%H'))
+        if day_time < 12:
+            Luna_say('Hello Sir. Good morning')
+        elif 12 <= day_time < 18:
+            Luna_say('Hello Sir. Good afternoon')
+        else:
+            Luna_say('Hello Sir. Good evening')
     elif command == 'goodbye':
         stop()
 
     # Сообщить текущее время
-
+    #
     elif 'time' in command:
         now = datetime.datetime.now()
-        Luna_say('Current time is %d hours %d minutes' % (now.hour, now.minute))
+        Luna_say('%d hours %d minutes' % (now.hour, now.minute))
 
     # Погода в городе (пока что работает криво)!!!!!!!!!!!!!!!!!!!
-
+    #
     elif 'current weather' in command:
         reg_ex = re.search('current weather in (.*)', command)
         if reg_ex:
@@ -91,8 +94,17 @@ def handle_command(command):
                 'Current weather in %s is %s. The maximum temperature is %0.2f and the minimum temperature is %0.2f degree celcius' % (
                 city, k, x['temp_max'], x['temp_min']))
 
-    # Открывает тот или иной сайт
+    # Рассказывает шутку
+    #
+    elif 'joke' in command:
+        res = requests.get('https://icanhazdadjoke.com/', headers={"Accept": "application/json"})
+        if res.status_code == requests.codes.ok:
+            Luna_say(str(res.json()['joke']))
+        else:
+            Luna_say('oops!I ran out of jokes')
 
+    # Открывает тот или иной сайт
+    #
     elif 'open' in command:
         reg_ex = re.search('open (.+)', command)
         if reg_ex:
@@ -105,7 +117,7 @@ def handle_command(command):
             pass
 
     # Запускает любое приложение с компьютера (пока что работает криво)!!!!!!!!!!!!!!!!!!!
-
+    #
     elif 'launch' in command:
         reg_ex = re.search('launch (.*)', command)
         if reg_ex:
@@ -119,14 +131,14 @@ def handle_command(command):
 
 
 # Mетод, выхода из программы
-
+#
 def stop():
-    Luna_say('Good bye')
+    Luna_say('Bye bye Sir. Have a nice day')
     exit()
 
 
 # Mетод, старта программы
-
+#
 def start():
     print('Start programm...')
 
