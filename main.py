@@ -1,11 +1,28 @@
 import random
 import time
+import datetime
 import playsound
 import os
 import re
 import webbrowser
 import speech_recognition as sr
 from gtts import gTTS
+import subprocess
+import smtplib
+import requests
+from pyowm import OWM
+
+
+
+
+# import youtube_dl
+# import vlc
+# import urllib
+# import urllib2
+# import json
+# from bs4 import BeautifulSoup as soup
+# from urllib2 import urlopen
+# import wikipedia
 
 
 # Mетод, который будет интерпретировать голосовой ответ пользователя
@@ -52,6 +69,28 @@ def handle_command(command):
     elif command == 'goodbye':
         stop()
 
+    # Сообщить текущее время
+
+    elif 'time' in command:
+        now = datetime.datetime.now()
+        Luna_say('Current time is %d hours %d minutes' % (now.hour, now.minute))
+
+    # Погода в городе (пока что работает криво)!!!!!!!!!!!!!!!!!!!
+
+    elif 'current weather' in command:
+        reg_ex = re.search('current weather in (.*)', command)
+        if reg_ex:
+            city = reg_ex.group(1)
+            owm = OWM('afe7f248b15ec66527056db5c0ca13f6')
+            mgr = owm.weather_manager()
+            obs = mgr.weather_at_place(city)
+            w = obs.get_weather()
+            k = w.get_status()
+            x = w.get_temperature(unit='celsius')
+            Luna_say(
+                'Current weather in %s is %s. The maximum temperature is %0.2f and the minimum temperature is %0.2f degree celcius' % (
+                city, k, x['temp_max'], x['temp_min']))
+
     # Открывает тот или иной сайт
 
     elif 'open' in command:
@@ -64,6 +103,16 @@ def handle_command(command):
             Luna_say('The website you have requested has been opened for you Sir.')
         else:
             pass
+
+    # Запускает любое приложение с компьютера (пока что работает криво)!!!!!!!!!!!!!!!!!!!
+
+    elif 'launch' in command:
+        reg_ex = re.search('launch (.*)', command)
+        if reg_ex:
+            appname = reg_ex.group(1)
+            appname1 = appname + ".exe"
+            subprocess.Popen(["open", "-n", "/Applications/" + appname1], stdout=subprocess.PIPE)
+            Luna_say('I have launched the desired application')
 
     else:
         Luna_say('Error, command not found')
