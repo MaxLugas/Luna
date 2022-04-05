@@ -10,6 +10,8 @@ from gtts import gTTS
 import subprocess
 import requests
 from pyowm import OWM
+
+
 # import smtplib
 # import youtube_dl
 # import vlc
@@ -78,21 +80,20 @@ def handle_command(command):
         now = datetime.datetime.now()
         Luna_say('%d hours %d minutes' % (now.hour, now.minute))
 
-    # Погода в городе (пока что работает криво)!!!!!!!!!!!!!!!!!!!
+    # Погода в городе
     #
     elif 'current weather' in command:
         reg_ex = re.search('current weather in (.*)', command)
         if reg_ex:
             city = reg_ex.group(1)
-            owm = OWM('afe7f248b15ec66527056db5c0ca13f6')
+            owm = OWM('ab0d5e80e8dafb2cb81fa9e82431c1fa')
             mgr = owm.weather_manager()
-            obs = mgr.weather_at_place(city)
-            w = obs.get_weather()
-            k = w.get_status()
-            x = w.get_temperature(unit='celsius')
+            observation = mgr.weather_at_place(city)
+            w = observation.weather
+            x = w.temperature('celsius')
             Luna_say(
-                'Current weather in %s is %s. The maximum temperature is %0.2f and the minimum temperature is %0.2f degree celcius' % (
-                city, k, x['temp_max'], x['temp_min']))
+                'The maximum temperature in %s is %0.2f and the minimum temperature is %0.2f degree celcius' % (
+                    city, x['temp_max'], x['temp_min']))
 
     # Рассказывает шутку
     #
