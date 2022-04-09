@@ -104,7 +104,7 @@ def handle_command(command):
         else:
             Luna_say('oops!I ran out of jokes')
 
-    # Открывает тот или иной сайт
+    # Открывает тот или иной сайт (пока что работает криво)!!!!!!!!!!!!!!!!!!!
     #
     elif 'open' in command:
         reg_ex = re.search('open (.+)', command)
@@ -126,6 +126,25 @@ def handle_command(command):
             appname1 = appname + ".exe"
             subprocess.Popen(["open", "-n", "/Applications/" + appname1], stdout=subprocess.PIPE)
             Luna_say('I have launched the desired application')
+
+    # Помощник при сложном выборе
+    #
+    elif 'choice' in command:
+        answer = ["Indisputably", "Predetermined", "No doubt", "Definitely yes", "You can be sure of it",
+                  "It seems to me - yes", "Most likely", "Good prospects", "Signs say - yes", "Yes",
+                  "It's not clear yet, try again", "Ask later", "It's better not to tell",
+                  "It's impossible to predict now",
+                  "Concentrate and ask again", "Don't even think", "My answer is no", "According to my data - no",
+                  "The prospects are not very good", "Very doubtful"]
+        Luna_say('I will help your choice, because I know all the answers')
+        command = 'yes'
+        while 'yes' in command:
+            Luna_say('What is your question?')
+            question = listen()
+            Luna_say(random.choice(answer))
+            Luna_say('Are you have any question?')
+            command = listen()
+            command = command.lower()
 
     else:
         Luna_say('Error, command not found')
