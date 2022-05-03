@@ -29,7 +29,7 @@ def listen():
     with sr.Microphone() as source:
         voice_recognizer.pause_threshold = 1
         voice_recognizer.adjust_for_ambient_noise(source, duration=1)
-        print('Say something... ')
+        Luna_say('What is your command? ')
         audio = voice_recognizer.listen(source)
     try:
         voice_text = voice_recognizer.recognize_google(audio, language='en')
@@ -65,12 +65,12 @@ def handle_command(command):
         now = datetime.datetime.now()
         day_time = int(now.strftime('%H'))
         if day_time < 12:
-            Luna_say('Hello Sir. Good morning')
+            Luna_say('Good morning.How can I help?')
         elif 12 <= day_time < 18:
-            Luna_say('Hello Sir. Good afternoon')
+            Luna_say('Good afternoon. How can I help?')
         else:
-            Luna_say('Hello Sir. Good evening')
-    elif command == 'goodbye':
+            Luna_say('Good evening. How can I help?')
+    elif command == 'goodbye' or command == 'bye' or command == 'stop program':
         stop()
 
     # Сообщить текущее время
@@ -135,6 +135,8 @@ def handle_command(command):
             command = listen()
             command = command.lower()
 
+    # Подбор фильмов
+    #
     elif 'film' in command:
         Luna_say('What style of film you want to see?')
         command = listen()
