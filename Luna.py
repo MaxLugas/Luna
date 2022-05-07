@@ -9,6 +9,7 @@ import speech_recognition as sr
 from gtts import gTTS
 import requests
 from pyowm import OWM
+import subprocess
 
 
 # import smtplib
@@ -40,6 +41,22 @@ def listen():
     except sr.RequestError:
         return 'Error'
 
+# Mетод, который будет интерпретировать голосовой ответ пользователя молча
+#
+def silence():
+    voice_recognizer = sr.Recognizer()
+    with sr.Microphone() as source:
+        voice_recognizer.pause_threshold = 1
+        voice_recognizer.adjust_for_ambient_noise(source, duration=1)
+        audio = voice_recognizer.listen(source)
+    try:
+        voice_text = voice_recognizer.recognize_google(audio, language='en')
+        print(f'You say: {voice_text}')
+        return voice_text
+    except sr.UnknownValueError:
+        return 'Error'
+    except sr.RequestError:
+        return 'Error'
 
 # Mетод, который будет проигрывать аудио файл
 #
@@ -61,7 +78,7 @@ def handle_command(command):
 
     # Приветствие и завершение программы
     #
-    if command == 'hello':
+    if command == 'hello' or command == 'hi':
         now = datetime.datetime.now()
         day_time = int(now.strftime('%H'))
         if day_time < 12:
@@ -125,14 +142,18 @@ def handle_command(command):
                   "It's impossible to predict now",
                   "Concentrate and ask again", "Don't even think", "My answer is no", "According to my data - no",
                   "The prospects are not very good", "Very doubtful"]
-        Luna_say('I will help your choice, because I know all the answers')
-        command = 'yes'
-        while 'yes' in command:
+        Luna_say('What is your question?')
+        command = silence()
+        Luna_say(random.choice(answer))
+        Luna_say('Are you have any question?')
+        command = silence()
+        command = command.lower()
+        while command == 'yes':
             Luna_say('What is your question?')
-            question = listen()
+            command = silence()
             Luna_say(random.choice(answer))
             Luna_say('Are you have any question?')
-            command = listen()
+            command = silence()
             command = command.lower()
 
     # Подбор фильмов
@@ -142,24 +163,24 @@ def handle_command(command):
         command = listen()
         if command == 'horror':
             n = random.randint(1, 100)
-            with open('D:\\Shared\\Project\Films\horror.txt', encoding='utf-8') as file:
+            with open('horror.txt', encoding='utf-8') as file:
                 for index, line in enumerate(file):
                     if index == n - 1:
                         Luna_say(line)
                         break
         elif command == 'comedy':
             n = random.randint(1, 100)
-            with open('D:\\Shared\\Project\Films\comedy.txt') as file:
+            with open('comedy.txt') as file:
                 for index, line in enumerate(file):
                     if index == n - 1:
-                        print(line)
+                        Luna_say(line)
                         break
         elif command == 'cartoon':
             n = random.randint(1, 50)
-            with open('D:\\Shared\\Project\Films\cartoon.txt') as file:
+            with open('cartoon.txt') as file:
                 for index, line in enumerate(file):
                     if index == n - 1:
-                        print(line)
+                        Luna_say(line)
                         break
 
     else:
