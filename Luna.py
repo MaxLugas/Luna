@@ -1,7 +1,7 @@
 import random
 import time
 import datetime
-import playsound
+import playsound2
 import os
 import re
 import webbrowser
@@ -53,7 +53,7 @@ def Luna_say(message):
     audio_file = 'audio.mp3' + str(time.time()) + str(random.randint(1, 10000)) + '.mp3'
     voice.save(audio_file)
 
-    playsound.playsound(audio_file)
+    playsound2.playsound(audio_file)
     os.remove(audio_file)
 
     print(f'Luna: {message}')
