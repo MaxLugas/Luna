@@ -9,18 +9,6 @@ import speech_recognition as sr
 from gtts import gTTS
 import requests
 from pyowm import OWM
-import subprocess
-
-
-# import smtplib
-# import youtube_dl
-# import vlc
-# import urllib
-# import urllib2
-# import json
-# from bs4 import BeautifulSoup as soup
-# from urllib2 import urlopen
-# import wikipedia
 
 
 # Mетод, который будет интерпретировать голосовой ответ пользователя
@@ -41,8 +29,7 @@ def listen():
     except sr.RequestError:
         return 'Error'
 
-# Mетод, который будет интерпретировать голосовой ответ пользователя молча
-#
+
 def silence():
     voice_recognizer = sr.Recognizer()
     with sr.Microphone() as source:
@@ -57,6 +44,7 @@ def silence():
         return 'Error'
     except sr.RequestError:
         return 'Error'
+
 
 # Mетод, который будет проигрывать аудио файл
 #
@@ -76,18 +64,9 @@ def Luna_say(message):
 def handle_command(command):
     command = command.lower()
 
-    # Приветствие и завершение программы
+    # Функции для выхода из программы
     #
-    if command == 'hello' or command == 'hi':
-        now = datetime.datetime.now()
-        day_time = int(now.strftime('%H'))
-        if day_time < 12:
-            Luna_say('Good morning.How can I help?')
-        elif 12 <= day_time < 18:
-            Luna_say('Good afternoon. How can I help?')
-        else:
-            Luna_say('Good evening. How can I help?')
-    elif command == 'goodbye' or command == 'bye' or command == 'stop program':
+    if command == 'bye' or command == 'goodbye' or command == 'stop program':
         stop()
 
     # Сообщить текущее время
@@ -160,10 +139,10 @@ def handle_command(command):
     #
     elif 'film' in command:
         Luna_say('What style of film you want to see?')
-        command = listen()
+        command = silence()
         if command == 'horror':
             n = random.randint(1, 100)
-            with open('horror.txt', encoding='utf-8') as file:
+            with open('horror.txt') as file:
                 for index, line in enumerate(file):
                     if index == n - 1:
                         Luna_say(line)
@@ -198,6 +177,14 @@ def stop():
 #
 def start():
     print('Start programm...')
+    now = datetime.datetime.now()
+    day_time = int(now.strftime('%H'))
+    if day_time < 12:
+        Luna_say('Good morning')
+    elif 12 <= day_time < 18:
+        Luna_say('Good afternoon')
+    else:
+        Luna_say('Good evening')
 
     while True:
         command = listen()
