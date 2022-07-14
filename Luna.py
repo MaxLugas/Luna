@@ -18,7 +18,7 @@ def listen():
     with sr.Microphone() as source:
         voice_recognizer.pause_threshold = 1
         voice_recognizer.adjust_for_ambient_noise(source, duration=1)
-        Luna_say('What is your command? ')
+        playsound2.playsound('voice.wav')
         audio = voice_recognizer.listen(source)
     try:
         voice_text = voice_recognizer.recognize_google(audio, language='en')
@@ -66,7 +66,7 @@ def handle_command(command):
 
     # Функции для выхода из программы
     #
-    if command == 'bye' or command == 'goodbye' or command == 'stop program':
+    if 'bye' in command or 'goodbye' in command or 'stop program' in command:
         stop()
 
     # Узнать функционал помощника
